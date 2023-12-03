@@ -1,5 +1,8 @@
 name: Setup Node + PNPM
 description: Sets up the repository, Node & PNPM and installs
+branding:
+  color: orange
+  icon: package
 
 inputs:
   node-version:
@@ -24,6 +27,7 @@ runs:
       uses: pnpm/action-setup@v2
       with:
         version: ${{ inputs.pnpm-version }}
+        run_install: false
 
     - name: Setup Node.js ${{ inputs.node-version }}
       uses: actions/setup-node@v4
@@ -40,4 +44,3 @@ runs:
       shell: bash
       if: ${{ inputs.prefer-offline }}
       run: pnpm install --frozen-lockfile --prefer-offline
-
