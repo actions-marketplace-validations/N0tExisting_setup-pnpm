@@ -1,0 +1,43 @@
+name: Setup Node + PNPM
+description: Sets up the repository, Node & PNPM and installs
+
+inputs:
+  node-version:
+    required: true
+    description: "The version of node to use"
+  pnpm-version:
+    required: true
+    description: "The version of pnpm to use"
+  prefer-offline:
+    required: true
+    description: "Whether or not to use `--prefer-offline` for instalation"
+    default: true
+    type: boolean
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+
+    - name: Setup pnpm ${{ inputs.pnpm-version }}
+      uses: pnpm/action-setup@v2
+      with:
+        version: ${{ inputs.pnpm-version }}
+
+    - name: Setup Node.js ${{ inputs.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'pnpm'
+
+    - name: Install Fetch
+      shell: bash
+      if: ${{ !inputs.prefer-offline }}
+      run: pnpm install --frozen-lockfile
+
+    - name: Install offline
+      shell: bash
+      if: ${{ inputs.prefer-offline }}
+      run: pnpm install --frozen-lockfile --prefer-offline
+
